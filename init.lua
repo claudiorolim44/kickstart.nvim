@@ -66,6 +66,8 @@ Kickstart Guide:
     MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
     which is very useful when you're not exactly sure of what you're looking for.
 
+  TODO: ver novamente o `:help` e o "<space>sh" que ele fala aqui!
+
   I have left several `:help X` comments throughout the init.lua
     These are hints about where to find more information about the relevant settings,
     plugins or Neovim features used in Kickstart.
@@ -151,10 +153,10 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.opt.cursorline = true
+vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 3
+vim.opt.scrolloff = 5
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -180,12 +182,12 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
--- Keybinds to make split navigation easier.
+-- Keybinds to make split navigation easier. TODO: seria legal se acostumar com esses atalhos aqui também ;)
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
@@ -221,6 +223,8 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
+--
+--  TODO: aprender a sempre usar esse ":Lazy" abaixo para verificar a situação atual dos plugins
 --
 --  To check the current status of your plugins, run
 --    :Lazy
@@ -1038,7 +1042,7 @@ require('lazy').setup({
 -- ===============================================================
 -- ===============================================================
 
--- Apenas para arquivos 'text':
+-- [[ Apenas para arquivos 'text': ]]
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'text',
   callback = function()
@@ -1051,7 +1055,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- Folding
+-- [[ Fold options ]]
 
 -- change the way that vim displays collapsed/folded lines
 -- (fonte: https://vi.stackexchange.com/questions/4627/change-what-vim-displays-when-there-is-a-fold)
@@ -1072,15 +1076,24 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
   command = 'silent! loadview',
 })
 
--- Remaping keys:
+-- [[ Remaping keys: ]]
 local options = { noremap = true, silent = true }
 
--- Remap: Exit Insert Mode (jk or kj to Esc, in insert mode):
+-- Remap Exit in the Insert Mode (jk or kj to Esc, in insert mode):
 -- (fonte: https://www.reddit.com/r/neovim/comments/ucks49/comment/iqz2ov1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
 vim.keymap.set('i', 'jk', '<Esc>', options)
 vim.keymap.set('i', 'kj', '<Esc>', options)
 
--- Disabling keys:
+-- Remap arrow keys in normal mode to scrolling instead of moving
+-- (obs: especially to improve the reading experience)
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<c-y>')
+vim.keymap.set('n', '<c-up>', '<c-u>')
+vim.keymap.set('n', '<down>', '<c-e>')
+vim.keymap.set('n', '<c-down>', '<c-d>')
+
+-- [[ Disabling keys: ]]
 
 -- Disable arrow keys in insert mode
 vim.keymap.set('i', '<left>', '<cmd>echo "Use h to move!!"<CR>')
