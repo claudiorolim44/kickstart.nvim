@@ -153,7 +153,7 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.opt.cursorline = false
+vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 5
@@ -1086,12 +1086,14 @@ vim.keymap.set('i', 'kj', '<Esc>', options)
 
 -- Remap arrow keys in normal mode to scrolling instead of moving
 -- (obs: especially to improve the reading experience)
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set('n', '<up>', '<c-y>')
 vim.keymap.set('n', '<c-up>', '<c-u>')
 vim.keymap.set('n', '<down>', '<c-e>')
 vim.keymap.set('n', '<c-down>', '<c-d>')
+vim.keymap.set('n', '<left>', 'zh')
+vim.keymap.set('n', '<c-left>', 'zH')
+vim.keymap.set('n', '<right>', 'zl')
+vim.keymap.set('n', '<c-right>', 'zL')
 
 -- [[ Disabling keys: ]]
 
