@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -154,7 +154,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 3
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -180,10 +180,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -860,12 +860,14 @@ require('lazy').setup({
           --
           -- <c-l> will move you to the right of each of the expansion locations.
           -- <c-h> is similar, except moving you backwards.
+          -- //TODO: mudei temporariamente baixo de <c-h> para <c-h2>,
+          --  mas depois ver como vou fazer em definitivo!!!
           ['<C-l>'] = cmp.mapping(function()
             if luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
             end
           end, { 'i', 's' }),
-          ['<C-h>'] = cmp.mapping(function()
+          ['<C-h2>'] = cmp.mapping(function()
             if luasnip.locally_jumpable(-1) then
               luasnip.jump(-1)
             end
@@ -1027,3 +1029,80 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- ===============================================================
+-- ===============================================================
+-- ===============================================================
+-- #Daqui para baixo foi adicionado por mim!!!
+-- ===============================================================
+-- ===============================================================
+-- ===============================================================
+
+-- Apenas para arquivos 'text':
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'text',
+  callback = function()
+    vim.opt.tabstop = 4
+    vim.opt.shiftwidth = 4
+    vim.opt.autoindent = true
+    vim.opt.wrap = true
+    vim.opt.foldcolumn = '3'
+    vim.opt.expandtab = true -- faz com que o Vim insira espaços em vez de tabulações ao pressionar a tecla Tab
+  end,
+})
+
+-- Folding
+
+-- change the way that vim displays collapsed/folded lines
+-- (fonte: https://vi.stackexchange.com/questions/4627/change-what-vim-displays-when-there-is-a-fold)
+vim.opt.foldtext = 'v:lua.MyFoldText()'
+function _G.MyFoldText()
+  return vim.fn.getline(vim.v.foldstart)
+end
+
+-- lines to save text folding (obs: apenas para arquivo .txt!!!)
+vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
+  pattern = { '*.txt' },
+  desc = 'save view (folds), when closing file',
+  command = 'mkview',
+})
+vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
+  pattern = { '*.txt' },
+  desc = 'load view (folds), when opening file',
+  command = 'silent! loadview',
+})
+
+-- Remaping keys:
+local options = { noremap = true, silent = true }
+
+-- Remap: Exit Insert Mode (jk or kj to Esc, in insert mode):
+-- (fonte: https://www.reddit.com/r/neovim/comments/ucks49/comment/iqz2ov1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+vim.keymap.set('i', 'jk', '<Esc>', options)
+vim.keymap.set('i', 'kj', '<Esc>', options)
+
+-- Disabling keys:
+
+-- Disable arrow keys in insert mode
+vim.keymap.set('i', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('i', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('i', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('i', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+
+-- Desabilita teclas muito distantes (como Esc e Backspace)
+-- (!!!) (obs: futuramente apagar tudo isso aqui!!!)
+vim.keymap.set('i', '<Esc>', '<Nop>', options) -- Esc
+--Alternativa: Usar "jk" ou "kj" ou "ctrl [" ou "ctrl c" para "<Esc>"
+vim.keymap.set('i', '<BS>', '<Nop>', options) --Backspace
+--Alternativa: Usar "ctrl -w" (erase "last word"),
+-- "ctrl-u" (erase the entire line)
+-- ou mesmo "ctrl-h" (que é o equivalente ao backspace)
+vim.keymap.set('i', '<CR>', '<Nop>', options) --Enter
+--Alternativa: "Ctrl J"
+
+--[[ Outras sugestões que era bom ir vendo também:
+    (!!!) ctrl+i instead of tab 
+    ZZ instead of ":wq"
+
+    ctrl+e to scroll windows up
+    ctrl+y to scroll windows down
+--]]
