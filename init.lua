@@ -104,7 +104,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true
+-- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -156,7 +156,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 5
+vim.opt.scrolloff = 3
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -1052,6 +1052,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt.wrap = true
     vim.opt.foldcolumn = '3'
     vim.opt.expandtab = true -- faz com que o Vim insira espaços em vez de tabulações ao pressionar a tecla Tab
+    vim.opt.relativenumber = true
   end,
 })
 
@@ -1105,13 +1106,14 @@ vim.keymap.set('i', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Desabilita teclas muito distantes (como Esc e Backspace)
 -- (!!!) (obs: futuramente apagar tudo isso aqui!!!)
-vim.keymap.set('i', '<Esc>', '<Nop>', options) -- Esc
+vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Nop>', options) -- Esc
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 --Alternativa: Usar "jk" ou "kj" ou "ctrl [" ou "ctrl c" para "<Esc>"
-vim.keymap.set('i', '<BS>', '<Nop>', options) --Backspace
+vim.keymap.set({ 'i', 'n' }, '<BS>', '<Nop>', options) --Backspace
 --Alternativa: Usar "ctrl -w" (erase "last word"),
 -- "ctrl-u" (erase the entire line)
 -- ou mesmo "ctrl-h" (que é o equivalente ao backspace)
-vim.keymap.set('i', '<CR>', '<Nop>', options) --Enter
+vim.keymap.set({ 'i', 'n' }, '<CR>', '<Nop>', options) --Enter
 --Alternativa: "Ctrl J"
 
 --[[ Outras sugestões que era bom ir vendo também:
