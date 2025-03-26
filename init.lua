@@ -1009,6 +1009,32 @@ require('lazy').setup({
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
+  --
+  -- ===============================================================
+  -- #Daqui para baixo foi adicionado por mim!!!
+  -- ===============================================================
+  --
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      -- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    lazy = false, -- neo-tree will lazily load itself
+    config = function()
+      vim.keymap.set('n', '<leader>e', '<Cmd>Neotree reveal<CR>')
+    end,
+    ---@module "neo-tree"
+    ---@type neotree.Config?
+    opts = {
+      -- fill any relevant options here
+    },
+  },
+  --
+  --
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
