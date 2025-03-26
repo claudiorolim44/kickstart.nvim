@@ -1103,25 +1103,6 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
   command = 'silent! loadview',
 })
 
--- [[ Remaping keys: ]]
-local options = { noremap = true, silent = true }
-
--- Remap Exit in the Insert, Visual and Command Mode (jk or kj to Esc, in insert mode):
--- (fonte: https://www.reddit.com/r/neovim/comments/ucks49/comment/iqz2ov1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
-vim.keymap.set({ 'i', 'v', 'c' }, 'jk', '<Esc>', options)
-vim.keymap.set({ 'i', 'v', 'c' }, 'kj', '<Esc>', options)
-
--- Remap arrow keys in normal mode to scrolling instead of moving
--- (obs: especially to improve the reading experience)
-vim.keymap.set('n', '<up>', '<c-y>')
-vim.keymap.set('n', '<c-up>', '<c-u>')
-vim.keymap.set('n', '<down>', '<c-e>')
-vim.keymap.set('n', '<c-down>', '<c-d>')
-vim.keymap.set('n', '<left>', 'zh')
-vim.keymap.set('n', '<c-left>', 'zH')
-vim.keymap.set('n', '<right>', 'zl')
-vim.keymap.set('n', '<c-right>', 'zL')
-
 -- [[ Disabling keys: ]]
 
 -- Disable arrow keys in insert mode
@@ -1149,3 +1130,22 @@ vim.keymap.set({ 'i', 'n' }, '<CR>', '<Nop>', options) --Enter
     ctrl+e to scroll windows up
     ctrl+y to scroll windows down
 --]]
+
+-- [[ Remaping keys: ]]
+local options = { noremap = true, silent = true }
+
+-- Remap Exit in the Insert and Visual Mode (jk or kj to Esc, in insert mode):
+-- (fonte: https://www.reddit.com/r/neovim/comments/ucks49/comment/iqz2ov1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+vim.keymap.set({ 'i', 'v' }, 'jk', '<Esc>', options)
+vim.keymap.set({ 'i', 'v' }, 'kj', '<Esc>', options)
+
+-- Remap arrow keys in normal mode to scrolling instead of moving
+-- (obs: especially to improve the reading experience)
+vim.keymap.set('n', '<up>', '<c-y>')
+vim.keymap.set('n', '<c-up>', '<c-u>')
+vim.keymap.set('n', '<down>', '<c-e>')
+vim.keymap.set('n', '<c-down>', '<c-d>')
+vim.keymap.set('n', '<left>', 'zh')
+vim.keymap.set('n', '<c-left>', 'zH')
+vim.keymap.set('n', '<right>', 'zl')
+vim.keymap.set('n', '<c-right>', 'zL')
