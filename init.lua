@@ -140,8 +140,8 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 
 -- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
+-- vim.opt.splitright = true
+-- vim.opt.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -224,7 +224,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
 --
---  TODO: aprender a sempre usar esse ":Lazy" abaixo para verificar a situação atual dos plugins
+-- TODO: aprender a sempre usar esse ":Lazy" abaixo para verificar a situação atual dos plugins
 --
 --  To check the current status of your plugins, run
 --    :Lazy
@@ -1025,12 +1025,19 @@ require('lazy').setup({
     },
     lazy = false, -- neo-tree will lazily load itself
     config = function()
-      vim.keymap.set('n', '<leader>e', '<Cmd>Neotree reveal<CR>')
+      require('neo-tree').setup {
+        filesystem = {
+          -- Make neo-tree group empty directories like java/com/example
+          group_empty_dirs = true,
+          scan_mode = 'deep',
+        },
+      }
     end,
     ---@module "neo-tree"
     ---@type neotree.Config?
     opts = {
       -- fill any relevant options here
+      vim.keymap.set('n', '<leader>e', '<Cmd>Neotree reveal<CR>'),
     },
   },
   --
@@ -1068,17 +1075,21 @@ require('lazy').setup({
 -- ===============================================================
 -- ===============================================================
 
+-- [[ Para todos tipos de arquivos ]]
+vim.opt.colorcolumn = '120'
+vim.opt.relativenumber = true
+
 -- [[ Apenas para arquivos 'text': ]]
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'text',
   callback = function()
+    vim.opt.colorcolumn = '160'
     vim.opt.tabstop = 4
     vim.opt.shiftwidth = 4
     vim.opt.autoindent = true
     vim.opt.wrap = true
     vim.opt.foldcolumn = '3'
     vim.opt.expandtab = true -- faz com que o Vim insira espaços em vez de tabulações ao pressionar a tecla Tab
-    vim.opt.relativenumber = true
   end,
 })
 
@@ -1104,6 +1115,7 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
 })
 
 -- [[ Disabling keys: ]]
+local options = { noremap = true, silent = true }
 
 -- Disable arrow keys in insert mode
 vim.keymap.set('i', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -1132,12 +1144,11 @@ vim.keymap.set({ 'i', 'n' }, '<CR>', '<Nop>', options) --Enter
 --]]
 
 -- [[ Remaping keys: ]]
-local options = { noremap = true, silent = true }
 
 -- Remap Exit in the Insert and Visual Mode (jk or kj to Esc, in insert mode):
 -- (fonte: https://www.reddit.com/r/neovim/comments/ucks49/comment/iqz2ov1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
-vim.keymap.set({ 'i', 'v' }, 'jk', '<Esc>', options)
-vim.keymap.set({ 'i', 'v' }, 'kj', '<Esc>', options)
+vim.keymap.set('i', 'jk', '<Esc>', options)
+vim.keymap.set('i', 'kj', '<Esc>', options)
 
 -- Remap arrow keys in normal mode to scrolling instead of moving
 -- (obs: especially to improve the reading experience)
@@ -1149,3 +1160,18 @@ vim.keymap.set('n', '<left>', 'zh')
 vim.keymap.set('n', '<c-left>', 'zH')
 vim.keymap.set('n', '<right>', 'zl')
 vim.keymap.set('n', '<c-right>', 'zL')
+
+-- ?Put a new description here?
+-- TODO: (!!!) Improve this here too!!!
+--(source: https://vi.stackexchange.com/questions/120/how-do-i-move-vertically-until-reaching-a-non-whitespace-character)
+vim.keymap.set({ 'n', 'v' }, '<Leader>j', '<CMD>call VerticalSpaceJumpDown()<CR>', {})
+vim.keymap.set({ 'n', 'v' }, '<Leader>k', '<CMD>call VerticalSpaceJumpUp()<CR>', {})
+
+vim.cmd [[
+  function! VerticalSpaceJumpUp()
+    call search('\%' . virtcol('.') . 'v\S', 'bW')
+  endfunction
+  function! VerticalSpaceJumpDown()
+    call search('\%' . virtcol('.') . 'v\S', 'W')
+  endfunction
+]]
