@@ -1040,6 +1040,10 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>e', '<Cmd>Neotree reveal<CR>'),
     },
   },
+  -- diffview.nvim plugin instalation:
+  {
+    'sindrets/diffview.nvim',
+  },
   --
   --
 }, {
