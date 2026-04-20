@@ -1143,14 +1143,14 @@ vim.keymap.set('i', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Desabilita teclas muito distantes (como Esc e Backspace)
 -- (!!!) (obs: futuramente apagar tudo isso aqui!!!)
-vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Nop>', options) -- Esc
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+-- vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Nop>', options) -- Esc
+-- vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 --Alternativa: Usar "jk" ou "kj" ou "ctrl [" ou "ctrl c" para "<Esc>"
-vim.keymap.set({ 'i', 'n' }, '<BS>', '<Nop>', options) --Backspace
+-- vim.keymap.set({ 'i', 'n' }, '<BS>', '<Nop>', options) --Backspace
 --Alternativa: Usar "ctrl -w" (erase "last word"),
 -- "ctrl-u" (erase the entire line)
 -- ou mesmo "ctrl-h" (que é o equivalente ao backspace)
-vim.keymap.set({ 'i', 'n' }, '<CR>', '<Nop>', options) --Enter
+-- vim.keymap.set({ 'i', 'n' }, '<CR>', '<Nop>', options) --Enter
 --Alternativa: "Ctrl J"
 
 --[[ Outras sugestões que era bom ir vendo também:
@@ -1165,8 +1165,8 @@ vim.keymap.set({ 'i', 'n' }, '<CR>', '<Nop>', options) --Enter
 
 -- Remap Exit in the Insert and Visual Mode (jk or kj to Esc, in insert mode):
 -- (fonte: https://www.reddit.com/r/neovim/comments/ucks49/comment/iqz2ov1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
-vim.keymap.set('i', 'jk', '<Esc>', options)
-vim.keymap.set('i', 'kj', '<Esc>', options)
+-- vim.keymap.set('i', 'jk', '<Esc>', options)
+-- vim.keymap.set('i', 'kj', '<Esc>', options)
 
 -- Remap arrow keys in normal mode to scrolling instead of moving
 -- (obs: especially to improve the reading experience)
@@ -1193,3 +1193,14 @@ vim.cmd [[
     call search('\%' . virtcol('.') . 'v\S', 'W')
   endfunction
 ]]
+
+-- ?Put a description here?
+vim.keymap.set('n', 'ç', ':', { noremap = true, silent = false, desc = 'Command line' })
+vim.keymap.set('n', 'Ç', '/', { noremap = true, silent = false, desc = 'Search' })
+
+-- ?Put a description here?
+vim.keymap.set('n', 'n', 'nzzzv', { noremap = true, silent = true, desc = 'Next search result' })
+vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true, silent = true, desc = 'Previous search result' })
+
+vim.keymap.set('n', ']c', ']czz', { remap = true, silent = true, desc = 'Next diff change' })
+vim.keymap.set('n', '[c', '[czz', { remap = true, silent = true, desc = 'Previous diff change' })
