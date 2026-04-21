@@ -1195,12 +1195,14 @@ vim.cmd [[
 ]]
 
 -- ?Put a description here?
-vim.keymap.set('n', 'ç', ':', { noremap = true, silent = false, desc = 'Command line' })
-vim.keymap.set('n', 'Ç', '/', { noremap = true, silent = false, desc = 'Search' })
+vim.keymap.set({ 'n', 'v' }, 'ç', ':', { noremap = true, silent = false, desc = 'Open command line' })
+vim.keymap.set({ 'n', 'v' }, ':', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command line key' })
+vim.keymap.set({ 'n', 'v' }, 'Ç', '/', { noremap = true, silent = false, desc = 'Open search' })
+vim.keymap.set({ 'n', 'v' }, '/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search key' })
 
 -- ?Put a description here?
-vim.keymap.set('n', 'n', 'nzzzv', { noremap = true, silent = true, desc = 'Next search result' })
-vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true, silent = true, desc = 'Previous search result' })
+vim.keymap.set({ 'n', 'v' }, 'n', 'nzzzv', { noremap = true, silent = true, desc = 'Next search result' })
+vim.keymap.set({ 'n', 'v' }, 'N', 'Nzzzv', { noremap = true, silent = true, desc = 'Previous search result' })
 
-vim.keymap.set('n', ']c', ']czz', { remap = true, silent = true, desc = 'Next diff change' })
-vim.keymap.set('n', '[c', '[czz', { remap = true, silent = true, desc = 'Previous diff change' })
+vim.keymap.set({ 'n', 'v' }, ']c', ']czz', { remap = true, silent = true, desc = 'Next diff change' })
+vim.keymap.set({ 'n', 'v' }, '[c', '[czz', { remap = true, silent = true, desc = 'Previous diff change' })
