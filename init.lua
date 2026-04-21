@@ -1094,7 +1094,7 @@ require('lazy').setup({
 -- ===============================================================
 
 -- [[ Para todos tipos de arquivos ]]
-vim.opt.colorcolumn = '120'
+vim.opt.colorcolumn = '100'
 vim.opt.relativenumber = true
 
 -- [[ Apenas para arquivos 'text': ]]
