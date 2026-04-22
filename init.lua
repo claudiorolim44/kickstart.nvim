@@ -1104,8 +1104,9 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt.colorcolumn = '160'
     vim.opt.tabstop = 4
     vim.opt.shiftwidth = 0 --If set to 0, Vim uses the current 'tabstop' value.
-    vim.opt.autoindent = true
     vim.opt.wrap = true
+    vim.opt.autoindent = true
+    vim.opt.linebreak = true -- Wrap at words instead of characters
     vim.opt.foldcolumn = '3'
     vim.opt.expandtab = true -- faz com que o Vim insira espaços em vez de tabulações ao pressionar a tecla Tab
   end,
