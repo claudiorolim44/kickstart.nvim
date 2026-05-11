@@ -996,7 +996,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -1134,13 +1134,13 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
 })
 
 -- [[ Disabling keys: ]]
-local options = { noremap = true, silent = true }
+-- local options = { noremap = true, silent = true }
 
--- Disable arrow keys in insert mode
-vim.keymap.set('i', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('i', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('i', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('i', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- -- Disable arrow keys in insert mode
+-- vim.keymap.set('i', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('i', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('i', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('i', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Desabilita teclas muito distantes (como Esc e Backspace)
 -- (!!!) (obs: futuramente apagar tudo isso aqui!!!)
@@ -1183,8 +1183,8 @@ vim.keymap.set('n', '<c-right>', 'zL')
 -- ?Put a new description here?
 -- TODO: (!!!) Improve this here too!!!
 --(source: https://vi.stackexchange.com/questions/120/how-do-i-move-vertically-until-reaching-a-non-whitespace-character)
-vim.keymap.set({ 'n', 'v' }, '<Leader>j', '<CMD>call VerticalSpaceJumpDown()<CR>', {})
-vim.keymap.set({ 'n', 'v' }, '<Leader>k', '<CMD>call VerticalSpaceJumpUp()<CR>', {})
+vim.keymap.set({ 'n', 'v' }, '<A-j>', '<CMD>call VerticalSpaceJumpDown()<CR>zt', {})
+vim.keymap.set({ 'n', 'v' }, '<A-k>', '<CMD>call VerticalSpaceJumpUp()<CR>zt', {})
 
 vim.cmd [[
   function! VerticalSpaceJumpUp()
@@ -1196,10 +1196,21 @@ vim.cmd [[
 ]]
 
 -- ?Put a description here?
-vim.keymap.set({ 'n', 'v' }, 'ç', ':', { noremap = true, silent = false, desc = 'Open command line' })
-vim.keymap.set({ 'n', 'v' }, ':', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command line key' })
-vim.keymap.set({ 'n', 'v' }, 'Ç', '/', { noremap = true, silent = false, desc = 'Open search' })
-vim.keymap.set({ 'n', 'v' }, '/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search key' })
+-- vim.keymap.set({ 'n', 'v', 'c' }, 'ç', ':', { noremap = true, silent = false, desc = 'Open command line' })
+-- vim.keymap.set({ 'n', 'v', 'c' }, 'Ç', '/', { noremap = true, silent = false, desc = 'Open search' })
+-- vim.keymap.set({ 'n', 'v' }, ':', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command-line key' })
+-- vim.keymap.set({ 'n', 'v' }, '/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search key' })
+--
+-- vim.keymap.set({ 'n', 'v' }, 'qç', 'q:', { noremap = true, silent = false, desc = 'Open command-line window' })
+-- vim.keymap.set({ 'n', 'v' }, 'qÇ', 'q/', { noremap = true, silent = false, desc = 'Open search history window' })
+-- vim.keymap.set({ 'n', 'v' }, 'q:', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command-line window key' })
+-- vim.keymap.set({ 'n', 'v' }, 'q/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search history window key' })
+
+-- Treat ç as : and Ç as / in Normal/Visual command sequences.
+-- vim.opt.langmap = 'ç:,Ç/'
+--
+-- vim.keymap.set({ 'n', 'v' }, ':', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command-line key' })
+-- vim.keymap.set({ 'n', 'v' }, '/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search key' })
 
 -- ?Put a description here?
 vim.keymap.set({ 'n', 'v' }, 'n', 'nzzzv', { noremap = true, silent = true, desc = 'Next search result' })
@@ -1207,3 +1218,20 @@ vim.keymap.set({ 'n', 'v' }, 'N', 'Nzzzv', { noremap = true, silent = true, desc
 
 vim.keymap.set({ 'n', 'v' }, ']c', ']czz', { remap = true, silent = true, desc = 'Next diff change' })
 vim.keymap.set({ 'n', 'v' }, '[c', '[czz', { remap = true, silent = true, desc = 'Previous diff change' })
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Tell terminal emulators (e.g. foot) Neovim's current working directory via OSC 7.
+-- This helps shortcuts like Ctrl+Shift+n open a new terminal in Neovim's cwd,
+-- even when Neovim is the foreground app inside the terminal.
+-- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
+local function send_osc7_for_nvim_cwd()
+  local cwd = vim.fn.getcwd()
+  local host = vim.fn.hostname()
+  io.stdout:write(string.format('\027]7;file://%s%s\027\\', host, cwd))
+  io.stdout:flush()
+end
+
+vim.api.nvim_create_autocmd({ 'VimEnter', 'DirChanged' }, {
+  callback = send_osc7_for_nvim_cwd,
+})
+-- ───────────────────────────────── END BLOCK ─────────────────────────────────
