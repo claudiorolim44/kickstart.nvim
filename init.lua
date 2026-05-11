@@ -140,8 +140,8 @@ vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
 
 -- Configure how new splits should be opened
--- vim.opt.splitright = true
--- vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -187,7 +187,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
--- Keybinds to make split navigation easier. TODO: seria legal se acostumar com esses atalhos aqui também ;)
+-- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
@@ -1088,16 +1088,16 @@ require('lazy').setup({
 -- ===============================================================
 -- ===============================================================
 -- ===============================================================
--- #Daqui para baixo foi adicionado por mim!!!
+-- #My personal configs
 -- ===============================================================
 -- ===============================================================
 -- ===============================================================
 
--- [[ Para todos tipos de arquivos ]]
+-- [[ Basic config - All Files ]]
 vim.opt.colorcolumn = '100'
 vim.opt.relativenumber = true
 
--- [[ Apenas para arquivos 'text': ]]
+-- [[ Basic config - Only 'text' files ]]
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'text',
   callback = function()
@@ -1112,16 +1112,36 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- [[ Fold options ]]
+-- [[ Improve next/previous command ]]
+vim.keymap.set({ 'n', 'v' }, 'n', 'nzzzv', { noremap = true, silent = true, desc = 'Next search result' })
+vim.keymap.set({ 'n', 'v' }, 'N', 'Nzzzv', { noremap = true, silent = true, desc = 'Previous search result' })
+
+vim.keymap.set({ 'n', 'v' }, ']c', ']czz', { remap = true, silent = true, desc = 'Next diff change' })
+vim.keymap.set({ 'n', 'v' }, '[c', '[czz', { remap = true, silent = true, desc = 'Previous diff change' })
+
+-- [[ Remap arrow keys in normal mode to scrolling instead of moving ]]
+-- (obs: especially to improve the reading experience)
+vim.keymap.set('n', '<up>', '<c-y>')
+vim.keymap.set('n', '<c-up>', '<c-u>')
+vim.keymap.set('n', '<down>', '<c-e>')
+vim.keymap.set('n', '<c-down>', '<c-d>')
+vim.keymap.set('n', '<left>', 'zh')
+vim.keymap.set('n', '<c-left>', 'zH')
+vim.keymap.set('n', '<right>', 'zl')
+vim.keymap.set('n', '<c-right>', 'zL')
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Fold options
+-- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
 
 -- change the way that vim displays collapsed/folded lines
--- (fonte: https://vi.stackexchange.com/questions/4627/change-what-vim-displays-when-there-is-a-fold)
+-- (source: https://vi.stackexchange.com/questions/4627/change-what-vim-displays-when-there-is-a-fold)
 vim.opt.foldtext = 'v:lua.MyFoldText()'
 function _G.MyFoldText()
   return vim.fn.getline(vim.v.foldstart)
 end
 
--- lines to save text folding (obs: apenas para arquivo .txt!!!)
+-- lines to save text folding (obs: only to .txt files!!!)
 vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
   pattern = { '*.txt' },
   desc = 'save view (folds), when closing file',
@@ -1133,56 +1153,12 @@ vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
   command = 'silent! loadview',
 })
 
--- [[ Disabling keys: ]]
--- local options = { noremap = true, silent = true }
-
--- -- Disable arrow keys in insert mode
--- vim.keymap.set('i', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('i', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('i', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('i', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
--- Desabilita teclas muito distantes (como Esc e Backspace)
--- (!!!) (obs: futuramente apagar tudo isso aqui!!!)
--- vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Nop>', options) -- Esc
--- vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
---Alternativa: Usar "jk" ou "kj" ou "ctrl [" ou "ctrl c" para "<Esc>"
--- vim.keymap.set({ 'i', 'n' }, '<BS>', '<Nop>', options) --Backspace
---Alternativa: Usar "ctrl -w" (erase "last word"),
--- "ctrl-u" (erase the entire line)
--- ou mesmo "ctrl-h" (que é o equivalente ao backspace)
--- vim.keymap.set({ 'i', 'n' }, '<CR>', '<Nop>', options) --Enter
---Alternativa: "Ctrl J"
-
---[[ Outras sugestões que era bom ir vendo também:
-    (!!!) ctrl+i instead of tab 
-    ZZ instead of ":wq"
-
-    ctrl+e to scroll windows up
-    ctrl+y to scroll windows down
---]]
-
--- [[ Remaping keys: ]]
-
--- Remap Exit in the Insert and Visual Mode (jk or kj to Esc, in insert mode):
--- (fonte: https://www.reddit.com/r/neovim/comments/ucks49/comment/iqz2ov1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
--- vim.keymap.set('i', 'jk', '<Esc>', options)
--- vim.keymap.set('i', 'kj', '<Esc>', options)
-
--- Remap arrow keys in normal mode to scrolling instead of moving
--- (obs: especially to improve the reading experience)
-vim.keymap.set('n', '<up>', '<c-y>')
-vim.keymap.set('n', '<c-up>', '<c-u>')
-vim.keymap.set('n', '<down>', '<c-e>')
-vim.keymap.set('n', '<c-down>', '<c-d>')
-vim.keymap.set('n', '<left>', 'zh')
-vim.keymap.set('n', '<c-left>', 'zH')
-vim.keymap.set('n', '<right>', 'zl')
-vim.keymap.set('n', '<c-right>', 'zL')
-
--- ?Put a new description here?
--- TODO: (!!!) Improve this here too!!!
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Vertical Space Jumps
+--
 --(source: https://vi.stackexchange.com/questions/120/how-do-i-move-vertically-until-reaching-a-non-whitespace-character)
+-- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
+
 vim.keymap.set({ 'n', 'v' }, '<A-j>', '<CMD>call VerticalSpaceJumpDown()<CR>zt', {})
 vim.keymap.set({ 'n', 'v' }, '<A-k>', '<CMD>call VerticalSpaceJumpUp()<CR>zt', {})
 
@@ -1195,32 +1171,9 @@ vim.cmd [[
   endfunction
 ]]
 
--- ?Put a description here?
--- vim.keymap.set({ 'n', 'v', 'c' }, 'ç', ':', { noremap = true, silent = false, desc = 'Open command line' })
--- vim.keymap.set({ 'n', 'v', 'c' }, 'Ç', '/', { noremap = true, silent = false, desc = 'Open search' })
--- vim.keymap.set({ 'n', 'v' }, ':', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command-line key' })
--- vim.keymap.set({ 'n', 'v' }, '/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search key' })
---
--- vim.keymap.set({ 'n', 'v' }, 'qç', 'q:', { noremap = true, silent = false, desc = 'Open command-line window' })
--- vim.keymap.set({ 'n', 'v' }, 'qÇ', 'q/', { noremap = true, silent = false, desc = 'Open search history window' })
--- vim.keymap.set({ 'n', 'v' }, 'q:', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command-line window key' })
--- vim.keymap.set({ 'n', 'v' }, 'q/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search history window key' })
-
--- Treat ç as : and Ç as / in Normal/Visual command sequences.
--- vim.opt.langmap = 'ç:,Ç/'
---
--- vim.keymap.set({ 'n', 'v' }, ':', '<Nop>', { noremap = true, silent = true, desc = 'Disable old command-line key' })
--- vim.keymap.set({ 'n', 'v' }, '/', '<Nop>', { noremap = true, silent = true, desc = 'Disable old search key' })
-
--- ?Put a description here?
-vim.keymap.set({ 'n', 'v' }, 'n', 'nzzzv', { noremap = true, silent = true, desc = 'Next search result' })
-vim.keymap.set({ 'n', 'v' }, 'N', 'Nzzzv', { noremap = true, silent = true, desc = 'Previous search result' })
-
-vim.keymap.set({ 'n', 'v' }, ']c', ']czz', { remap = true, silent = true, desc = 'Next diff change' })
-vim.keymap.set({ 'n', 'v' }, '[c', '[czz', { remap = true, silent = true, desc = 'Previous diff change' })
-
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Tell terminal emulators (e.g. foot) Neovim's current working directory via OSC 7.
+--
 -- This helps shortcuts like Ctrl+Shift+n open a new terminal in Neovim's cwd,
 -- even when Neovim is the foreground app inside the terminal.
 -- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
