@@ -1101,6 +1101,65 @@ require('lazy').setup({
 -- ===============================================================
 -- ===============================================================
 
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Fold options
+-- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
+
+-- change the way that vim displays collapsed/folded lines
+-- (source: https://vi.stackexchange.com/questions/4627/change-what-vim-displays-when-there-is-a-fold)
+vim.opt.foldtext = 'v:lua.MyFoldText()'
+function _G.MyFoldText()
+  return vim.fn.getline(vim.v.foldstart)
+end
+
+-- lines to save text folding (obs: only to .txt files!!!)
+vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
+  pattern = { '*.txt' },
+  desc = 'save view (folds), when closing file',
+  command = 'mkview',
+})
+vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
+  pattern = { '*.txt' },
+  desc = 'load view (folds), when opening file',
+  command = 'silent! loadview',
+})
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Vertical Space Jumps
+--
+--(source: https://vi.stackexchange.com/questions/120/how-do-i-move-vertically-until-reaching-a-non-whitespace-character)
+-- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
+
+vim.keymap.set({ 'n', 'v' }, '<A-j>', '<CMD>call VerticalSpaceJumpDown()<CR>zt', {})
+vim.keymap.set({ 'n', 'v' }, '<A-k>', '<CMD>call VerticalSpaceJumpUp()<CR>zt', {})
+
+vim.cmd [[
+  function! VerticalSpaceJumpUp()
+    call search('\%' . virtcol('.') . 'v\S', 'bW')
+  endfunction
+  function! VerticalSpaceJumpDown()
+    call search('\%' . virtcol('.') . 'v\S', 'W')
+  endfunction
+]]
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- Tell terminal emulators (e.g. foot) Neovim's current working directory via OSC 7.
+--
+-- This helps shortcuts like Ctrl+Shift+n open a new terminal in Neovim's cwd,
+-- even when Neovim is the foreground app inside the terminal.
+-- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
+local function send_osc7_for_nvim_cwd()
+  local cwd = vim.fn.getcwd()
+  local host = vim.fn.hostname()
+  io.stdout:write(string.format('\027]7;file://%s%s\027\\', host, cwd))
+  io.stdout:flush()
+end
+
+vim.api.nvim_create_autocmd({ 'VimEnter', 'DirChanged' }, {
+  callback = send_osc7_for_nvim_cwd,
+})
+-- ───────────────────────────────── END BLOCK ─────────────────────────────────
+
 -- [[ Basic config - All Files ]]
 vim.opt.colorcolumn = '100'
 vim.opt.relativenumber = true
@@ -1169,62 +1228,3 @@ vim.keymap.set('n', '<C-S-PageUp>', function()
 end, {
   desc = 'Move current tab to the left',
 })
-
--- ──────────────────────────────────────────────────────────────────────────────
--- Fold options
--- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
-
--- change the way that vim displays collapsed/folded lines
--- (source: https://vi.stackexchange.com/questions/4627/change-what-vim-displays-when-there-is-a-fold)
-vim.opt.foldtext = 'v:lua.MyFoldText()'
-function _G.MyFoldText()
-  return vim.fn.getline(vim.v.foldstart)
-end
-
--- lines to save text folding (obs: only to .txt files!!!)
-vim.api.nvim_create_autocmd({ 'BufWinLeave' }, {
-  pattern = { '*.txt' },
-  desc = 'save view (folds), when closing file',
-  command = 'mkview',
-})
-vim.api.nvim_create_autocmd({ 'BufWinEnter' }, {
-  pattern = { '*.txt' },
-  desc = 'load view (folds), when opening file',
-  command = 'silent! loadview',
-})
-
--- ──────────────────────────────────────────────────────────────────────────────
--- Vertical Space Jumps
---
---(source: https://vi.stackexchange.com/questions/120/how-do-i-move-vertically-until-reaching-a-non-whitespace-character)
--- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
-
-vim.keymap.set({ 'n', 'v' }, '<A-j>', '<CMD>call VerticalSpaceJumpDown()<CR>zt', {})
-vim.keymap.set({ 'n', 'v' }, '<A-k>', '<CMD>call VerticalSpaceJumpUp()<CR>zt', {})
-
-vim.cmd [[
-  function! VerticalSpaceJumpUp()
-    call search('\%' . virtcol('.') . 'v\S', 'bW')
-  endfunction
-  function! VerticalSpaceJumpDown()
-    call search('\%' . virtcol('.') . 'v\S', 'W')
-  endfunction
-]]
-
--- ──────────────────────────────────────────────────────────────────────────────
--- Tell terminal emulators (e.g. foot) Neovim's current working directory via OSC 7.
---
--- This helps shortcuts like Ctrl+Shift+n open a new terminal in Neovim's cwd,
--- even when Neovim is the foreground app inside the terminal.
--- ──────────────────────────────── BEGIN BLOCK ────────────────────────────────
-local function send_osc7_for_nvim_cwd()
-  local cwd = vim.fn.getcwd()
-  local host = vim.fn.hostname()
-  io.stdout:write(string.format('\027]7;file://%s%s\027\\', host, cwd))
-  io.stdout:flush()
-end
-
-vim.api.nvim_create_autocmd({ 'VimEnter', 'DirChanged' }, {
-  callback = send_osc7_for_nvim_cwd,
-})
--- ───────────────────────────────── END BLOCK ─────────────────────────────────
