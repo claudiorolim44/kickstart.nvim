@@ -66,8 +66,6 @@ Kickstart Guide:
     MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
     which is very useful when you're not exactly sure of what you're looking for.
 
-  TODO: ver novamente o `:help` e o "<space>sh" que ele fala aqui!
-
   I have left several `:help X` comments throughout the init.lua
     These are hints about where to find more information about the relevant settings,
     plugins or Neovim features used in Kickstart.
@@ -771,6 +769,16 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        -- javascriptreact = { 'prettier' },
+        -- typescriptreact = { 'prettier' },
+
+        -- json = { 'prettier' },
+        -- css = { 'prettier' },
+        -- html = { 'prettier' },
+        -- markdown = { 'prettier' },
       },
     },
   },
@@ -993,9 +1001,9 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -1129,6 +1137,38 @@ vim.keymap.set('n', '<left>', 'zh')
 vim.keymap.set('n', '<c-left>', 'zH')
 vim.keymap.set('n', '<right>', 'zl')
 vim.keymap.set('n', '<c-right>', 'zL')
+
+-- [[ Toggles ]]
+
+-- Toggle diagnostic virtual text
+vim.keymap.set('n', '<leader>tv', function()
+  local cfg = vim.diagnostic.config()
+  vim.diagnostic.config { virtual_text = not cfg.virtual_text }
+end, { desc = '[T]oggle diagnostic [V]irtual text' })
+
+-- Toggle line Numbers
+vim.keymap.set('n', '<leader>tn', function()
+  local enable = not vim.wo.number
+  vim.wo.number = enable
+  vim.wo.relativenumber = enable
+end, { desc = '[T]oggle line [N]umbers' })
+
+-- [[ Tabs ]]
+
+-- Tabs: move current tab, similar to Firefox tab movement shortcuts
+-- <C-S-PageDown>   -- move aba para frente
+-- <C-S-PageUp>     -- move aba para trás
+vim.keymap.set('n', '<C-S-PageDown>', function()
+  vim.cmd 'tabmove +1'
+end, {
+  desc = 'Move current tab to the right',
+})
+
+vim.keymap.set('n', '<C-S-PageUp>', function()
+  vim.cmd 'tabmove -1'
+end, {
+  desc = 'Move current tab to the left',
+})
 
 -- ──────────────────────────────────────────────────────────────────────────────
 -- Fold options
