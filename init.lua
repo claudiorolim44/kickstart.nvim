@@ -1062,9 +1062,29 @@ require('lazy').setup({
     ---@module "neo-tree"
     ---@type neotree.Config?
   },
+  -- Make Neo-tree file renames/moves LSP-aware so import paths are updated automatically.
+  {
+    'Crysthamus/nvim-file-operations',
+    dependencies = {
+      'nvim-neo-tree/neo-tree.nvim',
+    },
+    config = function()
+      require('nvim-file-operations').setup()
+    end,
+  },
   -- diffview.nvim plugin instalation:
   {
     'sindrets/diffview.nvim',
+  },
+  -- Modern Inline Diagnostic Plugin
+  {
+    'rachartier/tiny-inline-diagnostic.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('tiny-inline-diagnostic').setup()
+      -- Disable standard virtual text to avoid overlapping duplicates
+      vim.diagnostic.config { virtual_text = false }
+    end,
   },
   --
   --
